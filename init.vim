@@ -4,10 +4,10 @@ set nocompatible              " be iMproved, required
 " --------
 filetype off
 call plug#begin('~/.config/nvim/plugged')
-" Auto-complete
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer' }
-" Clang format
-Plug 'rhysd/vim-clang-format'
+" 
+" General stuff
+" =============
+"
 " CTRLP - fuzzy file finder
 Plug 'ctrlpvim/ctrlp.vim'
 " Nice status line
@@ -21,13 +21,29 @@ Plug 'joshdick/onedark.vim'
 Plug 'scrooloose/nerdtree'
 " nerdcommenter
 Plug 'scrooloose/nerdcommenter'
+"
+" mainly cpp stuff
+" ================
+" 
+" Auto-complete
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer' }
+" Clang format
+Plug 'rhysd/vim-clang-format'
 " ycm generator from cmake project
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+" 
+" other stuff
+" ===========
+" 
 " auto parentheses
 Plug 'jiangmiao/auto-pairs'
 " some latex support
 Plug 'lervag/vimtex'
+" cpp enhanced highlighting for own methods/templates
+Plug 'octol/vim-cpp-enhanced-highlight'
 call plug#end()
+
+
 filetype plugin indent on
 
 " Appearance
@@ -86,7 +102,6 @@ set undodir=~/.config/nvim/tmp
 " autosave before ':make'
 set autowrite
 
-" let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_global_ycm_extra_conf = ''
 let g:ycm_confirm_extra_conf=0
@@ -97,6 +112,8 @@ let g:clang_format#detect_style_file = 1
 
 let g:ctrlp_custom_ignore = '\v[\/](build|release|build_gcc)$'
 
+let g:cpp_experimental_template_highlight = 1
+let g:cpp_concepts_highlight = 1
 
 " Align line-wise comment delimiters flush left instead of following code indentation
 let g:NERDDefaultAlign = 'left'
@@ -171,4 +188,60 @@ endfunction
 " fast build && run
 nmap <m-b> :w \| :call QuickBuild() <CR>
 
+
+
+ 
+" cursor must be the beginning of the method name!
+function! ExtractDefinition()
+    normal ma
+    " yank possible return value from 0 to a
+    normal 0"ay`a
+    let s:returnType = @a
+    let s:returnType = substitute(s:returnType, "\<virtual\>", "", "")
+    let s:returnType = substitute(s:returnType, "\<static\>", "", "")
+
+    " yank signature from a to ';'
+    normal `a"ay/;
+    let s:signature = @a
+    let s:signature = substitute(s:signature, "\<override\>", "", "")
+    " remove default arguments, naive approach: remove =...,
+    let s:signature = substitute(s:signature, "\=.*,", "", "")
+    " ... and everything from = ... )
+    let s:signature = substitute(s:signature, "\=.*)", ")", "")
+    
+    
+    echo s:signature
+    " move cursor to previous word 'class' - backwards 'b'
+    call search('\<class\>', 'b')
+    normal w"ayw
+    " yank the next word
+    let s:className = @a
+    " extract namespace
+    let s:namespace = ''
+    if search('\<namespace\>','b')
+        normal w"ayw
+        let s:namespace = @a
+    endif
+    " perfect user experience: cursor back to the start!
+    normal `a
+endfunction
+
+
+
+function! InsertDefinition()
+    " handle empty signature
+    if empty(s:signature)
+        echo "No signature found. Run ExtractDefinition() first."
+    endif
+    " handle empty namespace
+    let l:printNamespace = ''
+    if !empty(s:namespace)
+        let l:printNamespace = s:namespace . '::'
+    endif
+    " write everything in one command and let clang do the formatting 
+    exe 'normal O' s:returnType ' ' l:printNamespace s:className '::' s:signature '{}'
+endfunction
+
+nmap <M-w> :call ExtractDefinition()<CR>
+nmap <M-e> :call InsertDefinition()<CR>jo
 
