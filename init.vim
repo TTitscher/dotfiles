@@ -21,6 +21,12 @@ Plug 'joshdick/onedark.vim'
 Plug 'scrooloose/nerdtree'
 " nerdcommenter
 Plug 'scrooloose/nerdcommenter'
+" ycm generator from cmake project
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+" auto parentheses
+Plug 'jiangmiao/auto-pairs'
+" some latex support
+Plug 'lervag/vimtex'
 call plug#end()
 filetype plugin indent on
 
@@ -40,7 +46,7 @@ colorscheme onedark
 set cc=80
 
 " Different cursor shape depending on mode
-:let $nvim_tui_enable_cursor_shape=1
+:let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 " general
 " -------
@@ -77,6 +83,8 @@ set directory=~/.config/nvim/tmp,.
 set undofile
 set undodir=~/.config/nvim/tmp
 
+" autosave before ':make'
+set autowrite
 
 " let g:ycm_confirm_extra_conf = 0
 let g:ycm_autoclose_preview_window_after_insertion = 1
@@ -97,6 +105,11 @@ let g:NERDCommentEmptyLines = 1
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
 
+
+let g:vimtex_latexmk_options="-xelatex -bibtex"
+
+
+" try hardmode: 
 map <up> <nop>
 map <down> <nop>
 map <left> <nop>
@@ -104,6 +117,23 @@ map <right> <nop>
 inoremap <esc> <nop>
 inoremap jk <esc>
 
+
+" some general hotkeys
+" ====================
+nmap qq :q!<CR>
+" clear highlighted search
+map <Space> :nohlsearch<CR>
+
+map <c-n> :NERDTreeToggle<CR>
+nmap <m-d> <Plug>NERDCommenterToggle
+vmap <m-d> <Plug>NERDCommenterToggle
+
+" search / replace symbol under curser for the whole document
+:nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
+
+
+" c++ specific hotkeys
+" ====================
 nmap <m-i> :ClangFormat<CR>
 " add m-j to jump , m-k to jump back
 nmap <m-j> :YcmCompleter GoTo<CR>
@@ -111,23 +141,20 @@ nmap <m-k> <c-o>
 nmap <m-t> :YcmCompleter GetType<CR>
 nmap <m-f> :YcmCompleter FixIt<CR>
 
-let g:DoxygenToolkit_commentType = "C++"
-let g:DoxygenToolkit_compactDoc = "yes"
-let g:DoxygenToolkit_templateParamTag_pre="pre"
-let g:DoxygenToolkit_templateParamTag_post="post"
+" Go to header/cpp file
+nmap gc :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+" Find implementation: 
+" yank inner word
+" open cpp-file
+" search for ::+word
+nmap gd yiw :e %<.cpp<CR> :/\:\:<c-r>"<cr>:noh<cr>
 
 
-map <c-n> :NERDTreeToggle<CR>
-nmap <m-d> <Plug>NERDCommenterToggle
-vmap <m-d> <Plug>NERDCommenterToggle
-
+" doxygen:
 nmap <leader>br O//! @brief 
 nmap <leader>par o! @param 
 nmap <leader>ret o! @return 
 
-nmap qq :q!<CR>
-
-:set makeprg=python\ %
 
 function! QuickBuild()
     if &filetype == "cpp"
@@ -143,3 +170,5 @@ endfunction
 
 " fast build && run
 nmap <m-b> :w \| :call QuickBuild() <CR>
+
+
