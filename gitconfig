@@ -1,7 +1,0 @@
-[user]
-	email = thomas.titscher@bam.de
-	name = Thomas Titscher
-[alias]
-	l = log --graph --pretty=format:\"%Cred%h%  %Cgreen%cn %Cred%d %n %Cblue%cD (%cr) %Creset%n %B\"
-[core]
-	editor = nvim
