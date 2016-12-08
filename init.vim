@@ -46,6 +46,7 @@ call plug#end()
 
 filetype plugin indent on
 
+
 " Appearance
 " ----------
 let g:airline_powerline_fonts = 1
@@ -56,7 +57,14 @@ let g:airline_section_error = ''
 let g:airline_section_warning = ''
 syntax on
 set termguicolors
+
+"default colorscheme
 colorscheme onedark
+
+"different colorscheme for ruby and markdown
+autocmd FileType tex colorscheme flattened_light
+autocmd FileType markdown colorscheme flattened_light
+
 
 "show line limit
 set cc=80
