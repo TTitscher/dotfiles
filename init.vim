@@ -17,6 +17,8 @@ Plug 'romainl/flattened'
 Plug 'morhetz/gruvbox'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'joshdick/onedark.vim'
+Plug 'endel/vim-github-colorscheme'
+Plug 'vim-scripts/Simple256'
 " nerdtree
 Plug 'scrooloose/nerdtree'
 " nerdcommenter
@@ -41,6 +43,16 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'lervag/vimtex'
 " cpp enhanced highlighting for own methods/templates
 Plug 'octol/vim-cpp-enhanced-highlight'
+" Tagbar (!!!) To make this work properly with latex, recompile the 
+" newest version of ctags from source:
+" $ autoheader
+" $ autoconf  // both in package (apt-get install autoconf)
+" $ ./configure
+" $ make
+" $ sudo make install
+Plug 'majutsushi/tagbar'
+" gmsh syntax
+Plug 'vim-scripts/gmsh.vim'
 call plug#end()
 
 
@@ -61,13 +73,17 @@ set termguicolors
 "default colorscheme
 colorscheme onedark
 
-"different colorscheme for ruby and markdown
+"different colorscheme for latex and markdown
 autocmd FileType tex colorscheme flattened_light
 autocmd FileType markdown colorscheme flattened_light
 
+" GMSH (Meshing Facilities) 
+augroup filetypedetect 
+au BufNewFile,BufRead *.geo     setf gmsh 
+augroup END 
 
 "show line limit
-set cc=80
+"set cc=80
 
 " Different cursor shape depending on mode
 :let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
@@ -134,6 +150,9 @@ let g:NERDTrimTrailingWhitespace = 1
 let g:vimtex_latexmk_options="-xelatex -bibtex"
 
 
+" search for files up to $HOME
+set path=.;$HOME
+
 " try hardmode: 
 map <up> <nop>
 map <down> <nop>
@@ -156,6 +175,7 @@ vmap <m-d> <Plug>NERDCommenterToggle
 " search / replace symbol under curser for the whole document
 :nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 
+nmap <F10> :TagbarToggle<CR>
 
 " c++ specific hotkeys
 " ====================
