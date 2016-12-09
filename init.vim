@@ -53,7 +53,11 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'majutsushi/tagbar'
 " gmsh syntax
 Plug 'vim-scripts/gmsh.vim'
+" Markdown
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
 call plug#end()
+
 
 
 filetype plugin indent on
@@ -67,7 +71,6 @@ let g:airline_section_x = ''
 let g:airline_section_y = ''
 let g:airline_section_error = '' 
 let g:airline_section_warning = ''
-syntax on
 set termguicolors
 
 "default colorscheme
@@ -211,14 +214,22 @@ function! QuickBuild()
     if &filetype == "tex"
         !latexmk -xelatex -bibtex  %
     endif
+    if &filetype == "markdown"
+        !pandoc % --standalone --toc --mathjax --css ~/dotfiles/style.css -o %<.html
+        " then open the html file in a browser, possibly with autorefresh
+        " plugin
+    endif
 endfunction
 
 " fast build && run
 nmap <m-b> :w \| :call QuickBuild() <CR>
 
 
+" Markdown
+" ========
+let g:vim_markdown_math = 1
+let g:vim_markdown_folding_disabled = 1
 
- 
 " cursor must be the beginning of the method name!
 function! ExtractDefinition()
     normal ma
@@ -273,3 +284,4 @@ endfunction
 nmap <M-w> :call ExtractDefinition()<CR>
 nmap <M-e> :call InsertDefinition()<CR>jo
 
+syntax on
