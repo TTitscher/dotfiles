@@ -61,6 +61,7 @@ setopt noglobdots
 # use zsh style word splitting
 setopt noshwordsplit
 
+CASE_SENSITIVE="false"
 
 autoload -Uz compinit && compinit
 autoload -U colors && colors
@@ -84,6 +85,7 @@ alias ll='ls -lh'
 alias la='ls -a'
 alias -s pdf='okular'
 alias :q='exit'
+alias tmux="env TERM=xterm-256color tmux"
 
 alias vi=nvim
 
@@ -109,7 +111,7 @@ export OMP_NUM_THREADS=1
 # 1 -- smart case completion (abc => Abc)
 # 2 -- word flex completion (abc => A-big-Car)
 # 3 -- full flex completion (abc => ABraCadabra)
-zstyle ':completion:*' list-colors matcher-list '' \
+zstyle ':completion:*' matcher-list '' \
   'm:{a-z\-}={A-Z\_}' \
   'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
   'r:|?=** m:{a-z\-}={A-Z\_}'
