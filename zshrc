@@ -66,7 +66,7 @@ CASE_SENSITIVE="false"
 autoload -Uz compinit && compinit
 autoload -U colors && colors
 autoload -U zcalc
-PROMPT="%{$fg[red]%}%1~> %{$reset_color%}"
+PROMPT="%{$fg[magenta]%}%1~> %{$reset_color%}"
 
 
 autoload -Uz vcs_info
@@ -82,8 +82,8 @@ bindkey "\e[1~" beginning-of-line
 bindkey "\e[4~" end-of-line
 bindkey "\e[3~" delete-char
 bindkey "\e[2~" quoted-insert
-bindkey "\e[5~" history-search-backward
-bindkey "\e[6~" history-search-forward
+bindkey "\e[5~" history-beginning-search-backward
+bindkey "\e[6~" history-beginning-search-forward
 
 
 alias grep='grep --color=auto'
@@ -95,6 +95,9 @@ alias :q='exit'
 alias tmux="env TERM=xterm-256color tmux"
 
 alias vi=nvim
+
+export EDITOR=/usr/bin/nvim
+export VISUAL=/usr/bin/nvim
 
 # make directory and change into it
 function mcd() {
