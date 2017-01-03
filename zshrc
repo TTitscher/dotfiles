@@ -66,7 +66,14 @@ CASE_SENSITIVE="false"
 autoload -Uz compinit && compinit
 autoload -U colors && colors
 autoload -U zcalc
-PROMPT="%{$fg[magenta]%}%1~> %{$reset_color%}"
+PROMPT="%{$fg[red]%}%1~> %{$reset_color%}"
+
+
+autoload -Uz vcs_info
+precmd () { vcs_info }
+setopt prompt_subst
+zstyle ':vcs_info:git:*' formats       "%{$fg[green]%}[%b]"
+PS1="\$vcs_info_msg_0_$PS1"
 
 # zhs does not read .inputrc. so define the keys there is a somehow other way 
 # to define the keys using some kind of terminal-info. However, this did
