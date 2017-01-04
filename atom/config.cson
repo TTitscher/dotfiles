@@ -1,0 +1,50 @@
+"*":
+  "atom-beautify":
+    general:
+      _analyticsUserId: "601ea96f-5ecc-42f9-8574-b7e064c7c9c3"
+  "clang-format":
+    formatCOnSave: false
+  core:
+    customFileTypes:
+      "source.cpp": [
+        "h"
+      ]
+    disabledPackages: [
+      "markdown-preview"
+    ]
+  editor:
+    fontSize: 15
+    softWrap: true
+    tabLength: 4
+  "exception-reporting":
+    userId: "bc3c8e3f-3acf-1a74-b204-0b8a51fdf17e"
+  latex:
+    engine: "xelatex"
+    openResultInBackground: false
+    opener: "pdf-view"
+    producer: "dvipdf"
+  "markdown-preview-plus":
+    enableLatexRenderingByDefault: true
+    useGitHubStyle: true
+  "pdf-view":
+    reverseSyncBehaviour: "Double click"
+  welcome:
+    showOnStartup: false
+".beamer.latex.tex.text":
+  editor:
+    tabLength: 4
+".bibtex.text":
+  editor:
+    tabLength: 4
+".latex.log.text":
+  editor:
+    tabLength: 4
+".latex.memoir.tex.text":
+  editor:
+    tabLength: 4
+".latex.tex.text":
+  editor:
+    tabLength: 4
+".tex.text":
+  editor:
+    tabLength: 4

@@ -1,0 +1,4 @@
+'.platform-linux atom-text-editor':
+  'ctrl-d': 'editor:toggle-line-comments'
+'atom-text-editor':
+  'ctrl-shift-i': 'editor:auto-indent'
