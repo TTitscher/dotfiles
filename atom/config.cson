@@ -11,14 +11,18 @@
       ]
     disabledPackages: [
       "markdown-preview"
+      "language-gfm"
     ]
+    telemetryConsent: "no"
   editor:
+    fontFamily: "hack"
     fontSize: 15
     softWrap: true
     tabLength: 4
   "exception-reporting":
     userId: "bc3c8e3f-3acf-1a74-b204-0b8a51fdf17e"
   latex:
+    enableShellEscape: true
     engine: "xelatex"
     openResultInBackground: false
     opener: "pdf-view"
@@ -26,6 +30,14 @@
   "markdown-preview-plus":
     enableLatexRenderingByDefault: true
     useGitHubStyle: true
+  "markdown-table-formatter":
+    defaultTableJustification: "Center"
+    markdownGrammarScopes: [
+      "text.md"
+    ]
+  "markdown-writer":
+    tableAlignment: "center"
+    tableExtraPipes: true
   "pdf-view":
     reverseSyncBehaviour: "Double click"
   welcome:

@@ -131,3 +131,12 @@ zstyle ':completion:*' menu select
 # report about cpu-/system-/user-time of command if running longer than
 # 5 seconds
 REPORTTIME=5
+
+# stupid chat
+COLOR='\033[0;32m'
+NOCOLOR='\033[0m'
+FILE='/group/06_Data_Safety/chat.txt'
+function bamtalk() {
+    echo -e "${COLOR}$(date +%T) - $USER:${NOCOLOR} $@" >> ${HOME}${FILE}
+}
+
