@@ -95,6 +95,13 @@ alias :q='exit'
 alias tmux="env TERM=xterm-256color tmux"
 
 alias vi=nvim
+alias nja="ninja -C $HOME/nuto/source/ninja-build-release"
+
+
+export PATH=/usr/lib/ccache:$PATH
+export PATH=/home/ttitsche/Tools/rtags/build/bin:$PATH
+export TEXINPUTS=$HOME/data/bam/03_internalPresentations/BAM_CD:$TEXINPUTS
+
 
 export EDITOR=/usr/bin/nvim
 export VISUAL=/usr/bin/nvim
@@ -114,8 +121,28 @@ function up() {
     cd $ups
 }
 
+fancy-ctrl-z () {
+  if [[ $#BUFFER -eq 0 ]]; then
+    BUFFER="fg"
+    zle accept-line
+  else
+    zle push-input
+    zle clear-screen
+  fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
+
 
 export OMP_NUM_THREADS=1
+
+
+# Setting ag as the default source for fzf
+export FZF_DEFAULT_COMMAND='ag -p ${HOME}/dotfiles/agignore -g ""'
+
+# To apply the command to CTRL-T as well
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_DEFAULT_OPTS='--height 40% --reverse --border --inline-info'
 
 # 0 -- vanilla completion (abc => abc)
 # 1 -- smart case completion (abc => Abc)
@@ -140,3 +167,5 @@ function bamtalk() {
     echo -e "${COLOR}$(date +%T) - $USER:${NOCOLOR} $@" >> ${HOME}${FILE}
 }
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

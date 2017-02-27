@@ -8,8 +8,8 @@ call plug#begin('~/.config/nvim/plugged')
 " General stuff
 " =============
 "
-" CTRLP - fuzzy file finder
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 " Nice status line
 Plug 'bling/vim-airline'
 " color scheme
@@ -23,16 +23,27 @@ Plug 'vim-scripts/Simple256'
 Plug 'scrooloose/nerdtree'
 " nerdcommenter
 Plug 'scrooloose/nerdcommenter'
+" expand region
+Plug 'terryma/vim-expand-region'
+
 "
 " mainly cpp stuff
 " ================
 " 
 " Auto-complete
 Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer' }
+" snippets engine triggered by YCM
+Plug 'SirVer/ultisnips'
+" actual snippets
+Plug 'honza/vim-snippets'
+" supertab somehow for ycm and snippets to work together
+Plug 'ervandew/supertab'
 " Clang format
 Plug 'rhysd/vim-clang-format'
 " ycm generator from cmake project
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+" rtags indexer
+Plug 'lyuts/vim-rtags'
 " 
 " other stuff
 " ===========
@@ -77,8 +88,8 @@ set termguicolors
 colorscheme onedark
 
 "different colorscheme for latex and markdown
-autocmd FileType tex colorscheme flattened_light
-autocmd FileType markdown colorscheme flattened_light
+"autocmd FileType tex colorscheme flattened_light
+"autocmd FileType markdown colorscheme flattened_light
 
 " GMSH (Meshing Facilities) 
 augroup filetypedetect 
@@ -132,12 +143,21 @@ set autowrite
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_global_ycm_extra_conf = ''
 let g:ycm_confirm_extra_conf=0
-let g:ycm_complete_in_comments=1
+
+" YouCompleteMe and UltiSnips compatibility, with the helper of supertab
+" (via http://stackoverflow.com/a/22253548/1626737)
+let g:SuperTabDefaultCompletionType    = '<C-n>'
+let g:SuperTabCrMapping                = 0
+let g:UltiSnipsExpandTrigger           = '<tab>'
+let g:UltiSnipsJumpForwardTrigger      = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger     = '<s-tab>'
+let g:ycm_key_list_select_completion   = ['<C-j>', '<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-k>', '<C-p>', '<Up>']
 
 let g:clang_format#auto_format_on_insert_leave = 1
 let g:clang_format#detect_style_file = 1
 
-let g:ctrlp_custom_ignore = '\v[\/](build|release|build_gcc)$'
+
 
 let g:cpp_experimental_template_highlight = 1
 let g:cpp_concepts_highlight = 1
@@ -156,6 +176,10 @@ let g:vimtex_latexmk_options="-xelatex -bibtex"
 " search for files up to $HOME
 set path=.;$HOME
 
+" define leader SPACE
+let mapleader = "\<Space>"
+let maplocalleader = "\<Space>"
+
 " try hardmode: 
 map <up> <nop>
 map <down> <nop>
@@ -163,20 +187,37 @@ map <left> <nop>
 map <right> <nop>
 inoremap <esc> <nop>
 inoremap jk <esc>
+vnoremap jk <esc>
 
+
+nnoremap <Leader>o :Files~<CR>
+"nnoremap <Leader>w :w<CR>
+
+
+
+"Enter visual line mode with <Space><Space>:
+nmap <Leader><Leader> V
 
 " some general hotkeys
 " ====================
 nmap qq :q!<CR>
 " clear highlighted search
-map <Space> :nohlsearch<CR>
+map <F3> :nohlsearch<CR>
 
 map <c-n> :NERDTreeToggle<CR>
 nmap <m-d> <Plug>NERDCommenterToggle
 vmap <m-d> <Plug>NERDCommenterToggle
+"nmap <Leader>d <Plug>NERDCommenterToggle
+"vmap <Leader>d <Plug>NERDCommenterToggle
 
 " search / replace symbol under curser for the whole document
 :nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
+
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+
+
+
 
 nmap <F10> :TagbarToggle<CR>
 
@@ -215,7 +256,7 @@ function! QuickBuild()
         !latexmk -xelatex -bibtex  %
     endif
     if &filetype == "markdown"
-        !pandoc % --standalone --toc --mathjax --css ~/dotfiles/style.css -o %<.html
+        !pandoc % --standalone --toc --mathjax --css ~/dotfiles/github.css -o %<.html
         " then open the html file in a browser, possibly with autorefresh
         " plugin
     endif
@@ -278,10 +319,27 @@ function! InsertDefinition()
         let l:printNamespace = s:namespace . '::'
     endif
     " write everything in one command and let clang do the formatting 
-    exe 'normal O' s:returnType ' ' l:printNamespace s:className '::' s:signature '{}'
+    exe 'normal o' s:returnType ' ' l:printNamespace s:className '::' s:signature '{}'
 endfunction
 
 nmap <M-w> :call ExtractDefinition()<CR>
 nmap <M-e> :call InsertDefinition()<CR>jo
+
+
+function! WriteToChatFile()
+    let s:line = getline('.')
+    let s:date = system('date +%T')
+    let s:color = "\e[32m"
+    let s:nocolor = "\e[0m"
+    let s:user = " - ttitsche: "
+    let s:output = s:color . s:date . s:user . s:nocolor  . s:line
+    call writefile([s:output], 'chat.txt', "a")
+    normal dd
+    execute "start"
+endfunction
+
+map gl :call WriteToChatFile()<CR>
+
+
 
 syntax on

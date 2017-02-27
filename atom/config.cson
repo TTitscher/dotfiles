@@ -3,8 +3,11 @@
     general:
       _analyticsUserId: "601ea96f-5ecc-42f9-8574-b7e064c7c9c3"
   "clang-format":
-    formatCOnSave: false
+    executable: "clang-format"
+    formatCOnSave: true
+    formatCPlusPlusOnSave: true
   core:
+    autoHideMenuBar: true
     customFileTypes:
       "source.cpp": [
         "h"
@@ -12,11 +15,15 @@
     disabledPackages: [
       "markdown-preview"
       "language-gfm"
+      "linter-clang"
+    ]
+    packagesWithKeymapsDisabled: [
+      "clang-format"
     ]
     telemetryConsent: "no"
   editor:
     fontFamily: "hack"
-    fontSize: 15
+    fontSize: 17
     softWrap: true
     tabLength: 4
   "exception-reporting":
@@ -40,6 +47,19 @@
     tableExtraPipes: true
   "pdf-view":
     reverseSyncBehaviour: "Double click"
+  "spell-check":
+    grammars: [
+      "source.asciidoc"
+      "source.gfm"
+      "text.git-commit"
+      "text.plain"
+      "text.plain.null-grammar"
+      "text.md"
+    ]
+  tasks: {}
+  "vim-mode-plus":
+    useClipboardAsDefaultRegister: true
+    useSmartcaseForSearch: true
   welcome:
     showOnStartup: false
 ".beamer.latex.tex.text":
