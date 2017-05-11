@@ -10,6 +10,7 @@ call plug#begin('~/.config/nvim/plugged')
 "
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/goyo.vim'
 " Nice status line
 Plug 'bling/vim-airline'
 " color scheme
@@ -19,6 +20,7 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'joshdick/onedark.vim'
 Plug 'endel/vim-github-colorscheme'
 Plug 'vim-scripts/Simple256'
+Plug 'lifepillar/vim-solarized8'
 " nerdtree
 Plug 'scrooloose/nerdtree'
 " nerdcommenter
@@ -93,7 +95,8 @@ colorscheme onedark
 
 " GMSH (Meshing Facilities) 
 augroup filetypedetect 
-au BufNewFile,BufRead *.geo     setf gmsh 
+au BufNewFile,BufRead *.i     setf cpp 
+au BufNewFile,BufRead *.geo   setf gmsh 
 augroup END 
 
 "show line limit
@@ -119,6 +122,7 @@ set relativenumber
 set number
 set ttimeout
 set ttimeoutlen=100
+set linebreak
 
 " return to last edit position when opening files (you want this!)
 autocmd bufreadpost *
@@ -170,7 +174,7 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 
 
-let g:vimtex_latexmk_options="-xelatex -bibtex"
+let g:vimtex_latexmk_options="-lualatex -bibtex -synctex=1"
 
 
 " search for files up to $HOME
@@ -185,14 +189,16 @@ map <up> <nop>
 map <down> <nop>
 map <left> <nop>
 map <right> <nop>
-inoremap <esc> <nop>
 inoremap jk <esc>
 vnoremap jk <esc>
+cnoremap jk <C-c>
 
+" gj is like j but on wrapped lines, nice
+noremap j gj
+noremap k gk
 
 nnoremap <Leader>o :Files~<CR>
-"nnoremap <Leader>w :w<CR>
-
+nnoremap <Leader>p :Files<CR>
 
 
 "Enter visual line mode with <Space><Space>:
@@ -200,24 +206,18 @@ nmap <Leader><Leader> V
 
 " some general hotkeys
 " ====================
-nmap qq :q!<CR>
 " clear highlighted search
 map <F3> :nohlsearch<CR>
 
 map <c-n> :NERDTreeToggle<CR>
 nmap <m-d> <Plug>NERDCommenterToggle
 vmap <m-d> <Plug>NERDCommenterToggle
-"nmap <Leader>d <Plug>NERDCommenterToggle
-"vmap <Leader>d <Plug>NERDCommenterToggle
 
 " search / replace symbol under curser for the whole document
 :nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 
 vmap v <Plug>(expand_region_expand)
 vmap <C-v> <Plug>(expand_region_shrink)
-
-
-
 
 nmap <F10> :TagbarToggle<CR>
 
@@ -250,10 +250,7 @@ function! QuickBuild()
         !clang++ -std=c++14 % && ./a.out
     endif
     if &filetype == "python"
-        !python %
-    endif
-    if &filetype == "tex"
-        !latexmk -xelatex -bibtex  %
+        !python3 %
     endif
     if &filetype == "markdown"
         !pandoc % --standalone --toc --mathjax --css ~/dotfiles/github.css -o %<.html

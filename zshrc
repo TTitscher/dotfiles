@@ -96,9 +96,11 @@ alias tmux="env TERM=xterm-256color tmux"
 
 alias vi=nvim
 alias nja="ninja -C $HOME/nuto/source/ninja-build-release"
+alias s='git status'
 
+alias rm=trash
 
-export PATH=/usr/lib/ccache:$PATH
+#export PATH=/usr/lib/ccache:$PATH
 export PATH=/home/ttitsche/Tools/rtags/build/bin:$PATH
 export TEXINPUTS=$HOME/data/bam/03_internalPresentations/BAM_CD:$TEXINPUTS
 
