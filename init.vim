@@ -15,12 +15,7 @@ Plug 'junegunn/goyo.vim'
 Plug 'bling/vim-airline'
 " color scheme
 Plug 'romainl/flattened'
-Plug 'morhetz/gruvbox'
-Plug 'NLKNguyen/papercolor-theme'
 Plug 'joshdick/onedark.vim'
-Plug 'endel/vim-github-colorscheme'
-Plug 'vim-scripts/Simple256'
-Plug 'lifepillar/vim-solarized8'
 " nerdtree
 Plug 'scrooloose/nerdtree'
 " nerdcommenter
@@ -89,10 +84,6 @@ set termguicolors
 "default colorscheme
 colorscheme onedark
 
-"different colorscheme for latex and markdown
-"autocmd FileType tex colorscheme flattened_light
-"autocmd FileType markdown colorscheme flattened_light
-
 " GMSH (Meshing Facilities) 
 augroup filetypedetect 
 au BufNewFile,BufRead *.i     setf cpp 
@@ -144,8 +135,7 @@ set undodir=~/.config/nvim/tmp
 " autosave before ':make'
 set autowrite
 
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_global_ycm_extra_conf = ''
+let g:ycm_complete_in_comments = 1
 let g:ycm_confirm_extra_conf=0
 
 " YouCompleteMe and UltiSnips compatibility, with the helper of supertab
@@ -158,10 +148,8 @@ let g:UltiSnipsJumpBackwardTrigger     = '<s-tab>'
 let g:ycm_key_list_select_completion   = ['<C-j>', '<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-k>', '<C-p>', '<Up>']
 
-let g:clang_format#auto_format_on_insert_leave = 0
+let g:clang_format#auto_format = 1
 let g:clang_format#detect_style_file = 1
-
-
 
 let g:cpp_experimental_template_highlight = 1
 let g:cpp_concepts_highlight = 1
