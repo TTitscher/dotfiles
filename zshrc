@@ -100,10 +100,10 @@ alias s='git status'
 
 alias rm=trash
 
-#export PATH=/usr/lib/ccache:$PATH
-export PATH=/home/ttitsche/Tools/rtags/build/bin:$PATH
+export PATH=/home/ttitsche/.local/bin:$PATH
 export TEXINPUTS=$HOME/data/bam/03_internalPresentations/BAM_CD:$TEXINPUTS
-
+export PYTHONPATH=$HOME/.local/lib/python3.7/site-packages:$PYTHONPATH
+source ~/.local/share/dolfin/dolfin.conf
 
 export EDITOR=/usr/bin/nvim
 export VISUAL=/usr/bin/nvim
@@ -121,6 +121,11 @@ function up() {
     ups=$ups"../"
     done
     cd $ups
+}
+
+function c()
+{
+    echo "$(($*))"
 }
 
 fancy-ctrl-z () {

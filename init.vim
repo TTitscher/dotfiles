@@ -4,7 +4,7 @@ set nocompatible              " be iMproved, required
 " --------
 filetype off
 call plug#begin('~/.config/nvim/plugged')
-" 
+"
 " General stuff
 " =============
 "
@@ -15,48 +15,46 @@ Plug 'junegunn/goyo.vim'
 Plug 'bling/vim-airline'
 " color scheme
 Plug 'romainl/flattened'
-Plug 'morhetz/gruvbox'
-Plug 'NLKNguyen/papercolor-theme'
 Plug 'joshdick/onedark.vim'
-Plug 'endel/vim-github-colorscheme'
-Plug 'vim-scripts/Simple256'
-Plug 'lifepillar/vim-solarized8'
 " nerdtree
 Plug 'scrooloose/nerdtree'
 " nerdcommenter
 Plug 'scrooloose/nerdcommenter'
 " expand region
 Plug 'terryma/vim-expand-region'
-
-"
-" mainly cpp stuff
-" ================
-" 
-" Auto-complete
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer' }
 " snippets engine triggered by YCM
 Plug 'SirVer/ultisnips'
 " actual snippets
 Plug 'honza/vim-snippets'
 " supertab somehow for ycm and snippets to work together
 Plug 'ervandew/supertab'
+"
+" mainly cpp stuff
+" ================
+"
+" Auto-complete
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer' }
 " Clang format
 Plug 'rhysd/vim-clang-format'
 " ycm generator from cmake project
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
-" rtags indexer
-Plug 'lyuts/vim-rtags'
-" 
+" cpp enhanced highlighting for own methods/templates
+Plug 'octol/vim-cpp-enhanced-highlight'
+"
+" Python stuff
+" ============
+"
+Plug 'vim-syntastic/syntastic'
+Plug 'ambv/black'
+"
 " other stuff
 " ===========
-" 
+"
 " auto parentheses
 Plug 'jiangmiao/auto-pairs'
 " some latex support
 Plug 'lervag/vimtex'
-" cpp enhanced highlighting for own methods/templates
-Plug 'octol/vim-cpp-enhanced-highlight'
-" Tagbar (!!!) To make this work properly with latex, recompile the 
+" Tagbar (!!!) To make this work properly with latex, recompile the
 " newest version of ctags from source:
 " $ autoheader
 " $ autoconf  // both in package (apt-get install autoconf)
@@ -69,12 +67,11 @@ Plug 'vim-scripts/gmsh.vim'
 " Markdown
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
+" advanced folding
+Plug 'tmhedberg/SimpylFold'
 call plug#end()
 
-
-
 filetype plugin indent on
-
 
 " Appearance
 " ----------
@@ -82,7 +79,7 @@ let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_section_x = ''
 let g:airline_section_y = ''
-let g:airline_section_error = '' 
+let g:airline_section_error = ''
 let g:airline_section_warning = ''
 set termguicolors
 
@@ -93,14 +90,18 @@ colorscheme onedark
 "autocmd FileType tex colorscheme flattened_light
 "autocmd FileType markdown colorscheme flattened_light
 
-" GMSH (Meshing Facilities) 
-augroup filetypedetect 
-au BufNewFile,BufRead *.i     setf cpp 
-au BufNewFile,BufRead *.geo   setf gmsh 
-augroup END 
+
+augroup filetypedetect
+au BufNewFile,BufRead *.i     setf cpp
+au BufNewFile,BufRead *.geo   setf gmsh
+au BufNewFile,BufRead *.tikz  setf tex
+au FileType python setlocal formatprg=autopep8\ -
+augroup END
+
+autocmd FileType tex setlocal shiftwidth=2 tabstop=2
 
 "show line limit
-"set cc=80
+set cc=80
 
 " Different cursor shape depending on mode
 :let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
@@ -110,7 +111,9 @@ augroup END
 " leave 10 lines at top & bottom while scrolling
 set scrolloff=10
 set sidescrolloff=5
+set mouse=a
 " indentation
+:set foldlevelstart=99
 set autoindent
 set smarttab
 set tabstop=4
@@ -144,6 +147,9 @@ set undodir=~/.config/nvim/tmp
 " autosave before ':make'
 set autowrite
 
+" preview for %s/foo/bar/g in small split view, neovim only?
+set inccommand=split
+
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_global_ycm_extra_conf = ''
 let g:ycm_confirm_extra_conf=0
@@ -159,6 +165,7 @@ let g:ycm_key_list_select_completion   = ['<C-j>', '<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-k>', '<C-p>', '<Up>']
 
 let g:clang_format#auto_format_on_insert_leave = 0
+let g:clang_format#auto_format = 1
 let g:clang_format#detect_style_file = 1
 
 
@@ -174,8 +181,9 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 
 
-let g:vimtex_latexmk_options="-lualatex -bibtex -synctex=1"
+let g:vimtex_latexmk_options="-lualatex -synctex=1 --shell-escape"
 
+let g:python_highlight_all = 1
 
 " search for files up to $HOME
 set path=.;$HOME
@@ -184,7 +192,7 @@ set path=.;$HOME
 let mapleader = "\<Space>"
 let maplocalleader = "\<Space>"
 
-" try hardmode: 
+" try hardmode:
 map <up> <nop>
 map <down> <nop>
 map <left> <nop>
@@ -223,7 +231,6 @@ nmap <F10> :TagbarToggle<CR>
 
 " c++ specific hotkeys
 " ====================
-nmap <m-i> :ClangFormat<CR>
 " add m-j to jump , m-k to jump back
 nmap <m-j> :YcmCompleter GoTo<CR>
 nmap <m-k> <c-o>
@@ -232,22 +239,15 @@ nmap <m-f> :YcmCompleter FixIt<CR>
 
 " Go to header/cpp file
 nmap gc :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
-" Find implementation: 
+" Find implementation:
 " yank inner word
 " open cpp-file
 " search for ::+word
 nmap gd yiw :e %<.cpp<CR> :/\:\:<c-r>"<cr>:noh<cr>
 
-
-" doxygen:
-nmap <leader>br O//! @brief 
-nmap <leader>par o! @param 
-nmap <leader>ret o! @return 
-
-
 function! QuickBuild()
     if &filetype == "cpp"
-        !clang++ -std=c++14 % && ./a.out
+        !clang++ -std=c++14 -pthread % && ./a.out
     endif
     if &filetype == "python"
         !python3 %
@@ -267,76 +267,5 @@ nmap <m-b> :w \| :call QuickBuild() <CR>
 " ========
 let g:vim_markdown_math = 1
 let g:vim_markdown_folding_disabled = 1
-
-" cursor must be the beginning of the method name!
-function! ExtractDefinition()
-    normal ma
-    " yank possible return value from 0 to a
-    normal 0"ay`a
-    let s:returnType = @a
-    let s:returnType = substitute(s:returnType, "\<virtual\>", "", "")
-    let s:returnType = substitute(s:returnType, "\<static\>", "", "")
-
-    " yank signature from a to ';'
-    normal `a"ay/;
-    let s:signature = @a
-    let s:signature = substitute(s:signature, "\<override\>", "", "")
-    " remove default arguments, naive approach: remove =...,
-    let s:signature = substitute(s:signature, "\=.*,", "", "")
-    " ... and everything from = ... )
-    let s:signature = substitute(s:signature, "\=.*)", ")", "")
-    
-    
-    echo s:signature
-    " move cursor to previous word 'class' - backwards 'b'
-    call search('\<class\>', 'b')
-    normal w"ayw
-    " yank the next word
-    let s:className = @a
-    " extract namespace
-    let s:namespace = ''
-    if search('\<namespace\>','b')
-        normal w"ayw
-        let s:namespace = @a
-    endif
-    " perfect user experience: cursor back to the start!
-    normal `a
-endfunction
-
-
-
-function! InsertDefinition()
-    " handle empty signature
-    if empty(s:signature)
-        echo "No signature found. Run ExtractDefinition() first."
-    endif
-    " handle empty namespace
-    let l:printNamespace = ''
-    if !empty(s:namespace)
-        let l:printNamespace = s:namespace . '::'
-    endif
-    " write everything in one command and let clang do the formatting 
-    exe 'normal o' s:returnType ' ' l:printNamespace s:className '::' s:signature '{}'
-endfunction
-
-nmap <M-w> :call ExtractDefinition()<CR>
-nmap <M-e> :call InsertDefinition()<CR>jo
-
-
-function! WriteToChatFile()
-    let s:line = getline('.')
-    let s:date = system('date +%T')
-    let s:color = "\e[32m"
-    let s:nocolor = "\e[0m"
-    let s:user = " - ttitsche: "
-    let s:output = s:color . s:date . s:user . s:nocolor  . s:line
-    call writefile([s:output], 'chat.txt', "a")
-    normal dd
-    execute "start"
-endfunction
-
-map gl :call WriteToChatFile()<CR>
-
-
 
 syntax on
