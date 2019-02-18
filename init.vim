@@ -86,11 +86,6 @@ set termguicolors
 "default colorscheme
 colorscheme onedark
 
-"different colorscheme for latex and markdown
-"autocmd FileType tex colorscheme flattened_light
-"autocmd FileType markdown colorscheme flattened_light
-
-
 augroup filetypedetect
 au BufNewFile,BufRead *.i     setf cpp
 au BufNewFile,BufRead *.geo   setf gmsh
@@ -98,13 +93,12 @@ au BufNewFile,BufRead *.tikz  setf tex
 au FileType python setlocal formatprg=autopep8\ -
 augroup END
 
-autocmd FileType tex setlocal shiftwidth=2 tabstop=2
 
 "show line limit
 set cc=80
 
 " Different cursor shape depending on mode
-:let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 
 " general
 " -------
@@ -113,7 +107,7 @@ set scrolloff=10
 set sidescrolloff=5
 set mouse=a
 " indentation
-:set foldlevelstart=99
+set foldlevelstart=99
 set autoindent
 set smarttab
 set tabstop=4
@@ -126,6 +120,8 @@ set number
 set ttimeout
 set ttimeoutlen=100
 set linebreak
+
+autocmd FileType tex setlocal shiftwidth=2 tabstop=2
 
 " return to last edit position when opening files (you want this!)
 autocmd bufreadpost *
@@ -147,11 +143,11 @@ set undodir=~/.config/nvim/tmp
 " autosave before ':make'
 set autowrite
 
-" preview for %s/foo/bar/g in small split view, neovim only?
 set inccommand=split
 
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_global_ycm_extra_conf = ''
+let g:ycm_complete_in_comments = 1
 let g:ycm_confirm_extra_conf=0
 
 " YouCompleteMe and UltiSnips compatibility, with the helper of supertab
@@ -167,8 +163,6 @@ let g:ycm_key_list_previous_completion = ['<C-k>', '<C-p>', '<Up>']
 let g:clang_format#auto_format_on_insert_leave = 0
 let g:clang_format#auto_format = 1
 let g:clang_format#detect_style_file = 1
-
-
 
 let g:cpp_experimental_template_highlight = 1
 let g:cpp_concepts_highlight = 1
