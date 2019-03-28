@@ -65,10 +65,8 @@ Plug 'majutsushi/tagbar'
 " gmsh syntax
 Plug 'vim-scripts/gmsh.vim'
 " Markdown
-Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 " advanced folding
-Plug 'tmhedberg/SimpylFold'
 call plug#end()
 
 filetype plugin indent on
@@ -176,6 +174,12 @@ let g:NERDTrimTrailingWhitespace = 1
 
 
 let g:vimtex_latexmk_options="-lualatex -synctex=1 --shell-escape"
+let g:vimtex_quickfix_mode=0
+let g:vimtex_view_method="zathura"
+let g:tex_flavor='latex'
+"set conceallevel=1
+"let g:tex_conceal="abdmg"
+
 
 let g:python_highlight_all = 1
 
