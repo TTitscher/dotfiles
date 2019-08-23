@@ -80,6 +80,7 @@ let g:airline_section_y = ''
 let g:airline_section_error = ''
 let g:airline_section_warning = ''
 set termguicolors
+set guicursor=
 
 "default colorscheme
 colorscheme onedark
@@ -173,7 +174,7 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 
 
-let g:vimtex_latexmk_options="-lualatex -synctex=1 --shell-escape"
+let g:vimtex_latexmk_options="-pdf -synctex=1 --shell-escape"
 let g:vimtex_quickfix_mode=0
 let g:vimtex_view_method="zathura"
 let g:tex_flavor='latex'
@@ -251,7 +252,7 @@ function! QuickBuild()
         !python3 %
     endif
     if &filetype == "markdown"
-        !pandoc % --standalone --toc --mathjax --css ~/dotfiles/github.css -o %<.html
+        !pandoc % --standalone --toc --mathjax --css ~/dotfiles/style.css --filter pandoc-mermaid -o %<.html
         " then open the html file in a browser, possibly with autorefresh
         " plugin
     endif

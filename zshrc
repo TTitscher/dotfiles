@@ -99,10 +99,10 @@ alias s='git status'
 
 alias rm=trash
 
-export PATH=/home/ttitsche/.local/bin:$PATH
-export TEXINPUTS=$HOME/data/bam/03_internalPresentations/BAM_CD:$TEXINPUTS
-export PYTHONPATH=$HOME/.local/lib/python3.7/site-packages:$PYTHONPATH
-source ~/.local/share/dolfin/dolfin.conf
+export PATH=$HOME/.local/bin:$PATH
+export TEXINPUTS=$HOME/slides/CD:$TEXINPUTS
+export PYTHONPATH=$HOME/.local/lib/python3.7/site-packages:
+source $HOME/.local/share/dolfin/dolfin.conf
 
 export EDITOR=/usr/bin/nvim
 export VISUAL=/usr/bin/nvim
