@@ -1,15 +1,25 @@
-FROM quay.io/fenicsproject/stable
+FROM quay.io/fenicsproject/dev
 
-RUN pwd
 RUN apt-get update
 RUN apt-get -y install vim zsh neovim python3-neovim
-RUN pip3 install black
-RUN curl -fLo /home/fenics/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 RUN git clone https://github.com/ttitscher/dotfiles.git
-RUN ln -s /home/fenics/dotfiles/zshrc /home/fenics/.zshrc
+
+
+
+# install plugged stuff via vim
+USER fenics
+RUN ln -s ~/dotfiles/zshrc ~/.zshrc
+RUN ln -s /home/fenics/dotfiles/vimrc_test /home/fenics/.vimrc
+#RUN vim +'PlugInstall --sync' +qa
+
 RUN mkdir /home/fenics/.config/nvim
 RUN ln -s /home/fenics/dotfiles/init.vim /home/fenics/.config/nvim/init.vim
+#
+#
 
-RUN nvim +PlugInstall +qall
-
+#RUN pip3 install black
+USER root
 CMD ["/bin/zsh"]
+
+
