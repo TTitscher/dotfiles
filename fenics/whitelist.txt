@@ -1,0 +1,3 @@
+bin/fzf
+bin/fzf-tmux
+shell/key-bindings.zsh

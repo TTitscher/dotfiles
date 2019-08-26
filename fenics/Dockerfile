@@ -1,24 +1,33 @@
 FROM quay.io/fenicsproject/dev
 
 RUN apt-get update
-RUN apt-get -y install vim zsh neovim python3-neovim
-
-RUN git clone https://github.com/ttitscher/dotfiles.git
+RUN apt-get -y install zsh neovim python3-neovim silversearcher-ag python3-venv
 
 
 
 # install plugged stuff via vim
 USER fenics
+RUN git clone https://github.com/ttitscher/dotfiles.git
+
+ADD rm_whitelist.py .
+ADD whitelist.txt .
+
+RUN mkdir ~/.config/nvim
+ADD init.vim .config/nvim/init.vim
+
 RUN ln -s ~/dotfiles/zshrc ~/.zshrc
-RUN ln -s /home/fenics/dotfiles/vimrc_test /home/fenics/.vimrc
-#RUN vim +'PlugInstall --sync' +qa
+RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-RUN mkdir /home/fenics/.config/nvim
-RUN ln -s /home/fenics/dotfiles/init.vim /home/fenics/.config/nvim/init.vim
-#
-#
+#RUN nvim
+#RUN source ~/.local/share/nvim/site/autoload/plug.vim
+RUN nvim +PlugInstall +qall
 
-#RUN pip3 install black
+RUN ./rm_whitelist.py ~/.fzf
+
+
+
+##RUN pip3 install black
 USER root
 CMD ["/bin/zsh"]
 
