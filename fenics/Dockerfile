@@ -7,13 +7,17 @@ RUN apt-get -y install zsh neovim python3-neovim silversearcher-ag python3-venv
 
 # install plugged stuff via vim
 USER fenics
+
+RUN pip3 install --no-cache --user black jedi
+
 RUN git clone https://github.com/ttitscher/dotfiles.git
 
-ADD rm_whitelist.py .
-ADD whitelist.txt .
+#ADD rm_whitelist.py .
+#ADD whitelist.txt .
 
 RUN mkdir ~/.config/nvim
-ADD init.vim .config/nvim/init.vim
+RUN ln -s ~/dotfiles/init.vim ~/.config/nvim/init.vim
+#ADD init.vim .config/nvim/init.vim
 
 RUN ln -s ~/dotfiles/zshrc ~/.zshrc
 RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
@@ -23,11 +27,10 @@ RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
 #RUN source ~/.local/share/nvim/site/autoload/plug.vim
 RUN nvim +PlugInstall +qall
 
-RUN ./rm_whitelist.py ~/.fzf
+#RUN ./rm_whitelist.py ~/.fzf
 
 
 
-##RUN pip3 install black
 USER root
 CMD ["/bin/zsh"]
 
