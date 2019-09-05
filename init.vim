@@ -26,7 +26,7 @@ Plug 'SirVer/ultisnips'
 " actual snippets
 Plug 'honza/vim-snippets'
 " supertab somehow for ycm and snippets to work together
-"Plug 'ervandew/supertab'
+Plug 'ervandew/supertab'
 "
 " mainly cpp stuff
 " ================
@@ -40,6 +40,8 @@ Plug 'octol/vim-cpp-enhanced-highlight'
 " ============
 "
 Plug 'ambv/black'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'deoplete-plugins/deoplete-jedi'
 Plug 'davidhalter/jedi-vim'
 " other stuff
 " ===========
@@ -218,14 +220,16 @@ nmap <F10> :TagbarToggle<CR>
 " add m-j to jump , m-k to jump back
 nmap <m-k> <c-o>
 
+let g:jedi#completions_enabled = 0
+let g:deoplete#enable_at_startup = 1
 let g:jedi#goto_command = "<m-j>"
 "let g:jedi#goto_assignments_command = "<leader>g"
 "let g:jedi#goto_definitions_command = ""
 let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = "<leader>n"
-let g:jedi#completions_command = "<tab>"
+"let g:jedi#usages_command = "<leader>n"
+"let g:jedi#completions_command = "<tab>"
 let g:jedi#rename_command = "<leader>r"
-
+"let g:jedi#force_py_version = 3
 
 " Go to header/cpp file
 nmap gc :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
