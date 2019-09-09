@@ -1,14 +1,14 @@
 FROM quay.io/fenicsproject/dev
 
 RUN apt-get update
-RUN apt-get -y install zsh neovim python3-neovim silversearcher-ag python3-venv
+RUN apt-get -y install zsh neovim silversearcher-ag python3-venv trash-cli
 
 
 
 # install plugged stuff via vim
 USER fenics
 
-RUN pip3 install --no-cache --user black jedi
+RUN pip3 install --no-cache --user black jedi neovim==0.3.1
 
 RUN git clone https://github.com/ttitscher/dotfiles.git
 

@@ -10,6 +10,7 @@ call plug#begin('~/.config/nvim/plugged')
 "
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/goyo.vim'
 " Nice status line
 Plug 'bling/vim-airline'
 " color scheme
@@ -32,17 +33,20 @@ Plug 'ervandew/supertab'
 " ================
 "
 " Auto-complete
+Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer' }
+" Clang format
 Plug 'rhysd/vim-clang-format'
 " ycm generator from cmake project
+Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'}
+" cpp enhanced highlighting for own methods/templates
 Plug 'octol/vim-cpp-enhanced-highlight'
 "
 " Python stuff
 " ============
 "
+Plug 'vim-syntastic/syntastic'
 Plug 'ambv/black'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'deoplete-plugins/deoplete-jedi'
-Plug 'davidhalter/jedi-vim'
+"
 " other stuff
 " ===========
 "
@@ -58,8 +62,11 @@ Plug 'lervag/vimtex'
 " $ make
 " $ sudo make install
 Plug 'majutsushi/tagbar'
+" gmsh syntax
+Plug 'vim-scripts/gmsh.vim'
 " Markdown
 Plug 'plasticboy/vim-markdown'
+" advanced folding
 call plug#end()
 
 filetype plugin indent on
@@ -136,6 +143,11 @@ set undodir=~/.config/nvim/tmp
 set autowrite
 
 set inccommand=split
+
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_global_ycm_extra_conf = ''
+let g:ycm_complete_in_comments = 1
+let g:ycm_confirm_extra_conf=0
 
 " YouCompleteMe and UltiSnips compatibility, with the helper of supertab
 " (via http://stackoverflow.com/a/22253548/1626737)
@@ -216,20 +228,13 @@ vmap <C-v> <Plug>(expand_region_shrink)
 
 nmap <F10> :TagbarToggle<CR>
 
-" python specific hotkeys
+" c++ specific hotkeys
+" ====================
 " add m-j to jump , m-k to jump back
+nmap <m-j> :YcmCompleter GoTo<CR>
 nmap <m-k> <c-o>
-
-let g:jedi#completions_enabled = 0
-let g:deoplete#enable_at_startup = 1
-let g:jedi#goto_command = "<m-j>"
-"let g:jedi#goto_assignments_command = "<leader>g"
-"let g:jedi#goto_definitions_command = ""
-let g:jedi#documentation_command = "K"
-"let g:jedi#usages_command = "<leader>n"
-"let g:jedi#completions_command = "<tab>"
-let g:jedi#rename_command = "<leader>r"
-"let g:jedi#force_py_version = 3
+nmap <m-t> :YcmCompleter GetType<CR>
+nmap <m-f> :YcmCompleter FixIt<CR>
 
 " Go to header/cpp file
 nmap gc :e %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
