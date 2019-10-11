@@ -246,7 +246,14 @@ nmap gd yiw :e %<.cpp<CR> :/\:\:<c-r>"<cr>:noh<cr>
 
 function! QuickBuild()
     if &filetype == "cpp"
-        !clang++ -std=c++14 -pthread % && ./a.out
+        if filereadable("Makefile")
+            " current filename and make target + executable must match
+            let ex = expand("%:t:r")
+            execute "!" . "make " . ex
+            execute "!" . "./" . ex
+        else
+            !clang++ -std=c++14 -pthread % && ./a.out
+        endif
     endif
     if &filetype == "python"
         !python3 %

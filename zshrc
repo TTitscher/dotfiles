@@ -102,7 +102,7 @@ alias rm=trash
 export PATH=$HOME/.local/bin:$PATH
 export TEXINPUTS=$HOME/slides/CD:$TEXINPUTS
 export PYTHONPATH=$HOME/.local/lib/python3.7/site-packages:
-source $HOME/.local/share/dolfin/dolfin.conf
+#source $HOME/.local/share/dolfin/dolfin.conf
 
 export EDITOR=/usr/bin/nvim
 export VISUAL=/usr/bin/nvim
