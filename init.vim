@@ -33,7 +33,7 @@ Plug 'ervandew/supertab'
 " ================
 "
 " Auto-complete
-Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer' }
+"Plug 'Valloric/YouCompleteMe', {'do': './install.py --clang-completer' }
 " Clang format
 Plug 'rhysd/vim-clang-format'
 " ycm generator from cmake project
@@ -53,7 +53,7 @@ Plug 'ambv/black'
 " auto parentheses
 Plug 'jiangmiao/auto-pairs'
 " some latex support
-Plug 'lervag/vimtex'
+"Plug 'lervag/vimtex'
 " Tagbar (!!!) To make this work properly with latex, recompile the
 " newest version of ctags from source:
 " $ autoheader
@@ -66,7 +66,11 @@ Plug 'majutsushi/tagbar'
 Plug 'vim-scripts/gmsh.vim'
 " Markdown
 Plug 'plasticboy/vim-markdown'
-" advanced folding
+
+" HTML css
+"Plug 'mattn/emmet-vim'
+Plug 'alvan/vim-closetag'
+
 call plug#end()
 
 filetype plugin indent on
@@ -90,6 +94,7 @@ au BufNewFile,BufRead *.i     setf cpp
 au BufNewFile,BufRead *.geo   setf gmsh
 au BufNewFile,BufRead *.tikz  setf tex
 au FileType python setlocal formatprg=autopep8\ -
+au BufNewFile,BufRead *.zig set filetype=zig
 augroup END
 
 
@@ -114,13 +119,13 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab
 
-set relativenumber
+"set relativenumber
 set number
 set ttimeout
 set ttimeoutlen=100
 set linebreak
 
-autocmd FileType tex setlocal shiftwidth=2 tabstop=2
+autocmd FileType tex,html,css setlocal shiftwidth=2 tabstop=2
 
 " return to last edit position when opening files (you want this!)
 autocmd bufreadpost *
@@ -149,6 +154,15 @@ let g:ycm_global_ycm_extra_conf = ''
 let g:ycm_complete_in_comments = 1
 let g:ycm_confirm_extra_conf=0
 
+let g:ycm_language_server =
+  \ [
+  \{
+  \     'name': 'zls',
+  \     'filetypes': [ 'zig' ],
+  \     'cmdline': [ '/home/schmaus/tools/zls/zig-out/bin/zls' ]
+  \    }
+  \ ]
+
 " YouCompleteMe and UltiSnips compatibility, with the helper of supertab
 " (via http://stackoverflow.com/a/22253548/1626737)
 let g:SuperTabDefaultCompletionType    = '<C-n>'
@@ -174,7 +188,7 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDTrimTrailingWhitespace = 1
 
 
-let g:vimtex_latexmk_options="-pdf -synctex=1 --shell-escape"
+"let g:vimtex_latexmk_options="-pdf -synctex=1 --shell-escape"
 let g:vimtex_quickfix_mode=0
 let g:vimtex_view_method="zathura"
 let g:tex_flavor='latex'
@@ -252,14 +266,17 @@ function! QuickBuild()
             execute "!" . "make " . ex
             execute "!" . "./" . ex
         else
-            !clang++ -std=c++14 -pthread % && ./a.out
+            !clang++ -std=c++17 -pthread % && ./a.out
         endif
+    endif
+    if &filetype == "c"
+        !gcc % && ./a.out
     endif
     if &filetype == "python"
         !python3 %
     endif
     if &filetype == "markdown"
-        !pandoc % --standalone --toc --mathjax --css ~/dotfiles/style.css --filter pandoc-mermaid -o %<.html
+        !pandoc % --standalone --toc --mathjax --css ~/dotfiles/style.css --filter=mermaid-filter -o %<.html
         " then open the html file in a browser, possibly with autorefresh
         " plugin
     endif
@@ -268,6 +285,9 @@ endfunction
 " fast build && run
 nmap <m-b> :w \| :call QuickBuild() <CR>
 
+:iab iteM [ ]
+
+nnoremap <F4> :bp\|bd #<CR>
 
 " Markdown
 " ========
