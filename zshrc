@@ -66,7 +66,7 @@ CASE_SENSITIVE="false"
 autoload -Uz compinit && compinit
 autoload -U colors && colors
 autoload -U zcalc
-PROMPT="%{$fg[magenta]%}%1~> %{$reset_color%}"
+PROMPT="%{$fg[green]%}%1~> %{$reset_color%}"
 
 
 autoload -Uz vcs_info
@@ -93,13 +93,15 @@ alias la='ls -a'
 alias -s pdf='okular'
 alias :q='exit'
 alias tmux="env TERM=xterm-256color tmux"
+alias q="./icofraud_dbutil -q"
+alias a="./icofraud_manager -a csv -f"
 
 alias vi=nvim
 alias s='git status'
 
 alias rm=trash
 
-export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/bin:/snap/bin:$PATH
 export TEXINPUTS=$HOME/slides/CD:$TEXINPUTS
 export PYTHONPATH=$HOME/.local/lib/python3.7/site-packages:
 #source $HOME/.local/share/dolfin/dolfin.conf
@@ -140,15 +142,15 @@ zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
 
 
-export OMP_NUM_THREADS=1
-
-
 # Setting ag as the default source for fzf
-export FZF_DEFAULT_COMMAND='ag -p ${HOME}/dotfiles/agignore -g ""'
+export FZF_DEFAULT_COMMAND='ag -p ${HOME}/dotfiles/agignore -U -g ""'
 
 # To apply the command to CTRL-T as well
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='--height 40% --reverse --border --inline-info'
+
+export DENO_INSTALL="/home/thomas/.deno"
+export PATH="$DENO_INSTALL/bin:$HOME/tools:$PATH"
 
 # 0 -- vanilla completion (abc => abc)
 # 1 -- smart case completion (abc => Abc)
@@ -166,3 +168,13 @@ zstyle ':completion:*' menu select
 REPORTTIME=5
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+source ~/BSC/env.sh
+source ~/.vcpkg-env.sh
+export LANG=de_DE.UTF-8
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+unset SSH_ASKPASS

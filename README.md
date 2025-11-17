@@ -16,6 +16,9 @@ link
 - zshrc to ~/.zshrc
 - nvim to ~/.config/nvim
 
+ln -s ~/dotfiles/kitty.conf ~/.config/kitty/kitty.conf
+
+
 # additional tools
 
 npm install -g svelte-language-server
