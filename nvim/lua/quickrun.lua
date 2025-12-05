@@ -1,9 +1,3 @@
--- Fast build && run keybinding
-vim.keymap.set('n', '<M-b>', function()
-  vim.cmd('write')  -- Save the file first
-  quick_build()
-end, { desc = 'Quick build and run' })
-
 -- Quick build and run function with improvements
 local function quick_build()
   local filetype = vim.bo.filetype

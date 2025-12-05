@@ -28,6 +28,9 @@ vim.opt.cursorline = true
 -- enable mouse support in all modes
 vim.opt.mouse = 'a'
 
+-- show substitutions live
+vim.opt.inccommand = "split"
+
 -- undo
 vim.opt.undofile = true
 

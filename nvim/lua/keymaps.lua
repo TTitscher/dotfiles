@@ -6,7 +6,7 @@ vim.keymap.set('n', '<S-Tab>', ':BufferLineCyclePrev<CR>', { desc = 'Previous bu
 vim.keymap.set('n', '<F4>', ':bdelete<CR>', { desc = 'Close current buffer' })
 vim.keymap.set('n', '<M-d>', 'gcc', { remap = true, desc = 'Comments' })
 vim.keymap.set('v', '<M-d>', 'gc', { remap = true, desc = 'Comments' })
-vim.keymap.set('n', '<F3>', ':nohlsearch<CR>', { desc = 'nohlsearch' })
+vim.keymap.set('n', '<ESC>', ':nohlsearch<CR>', { desc = 'nohlsearch' })
 vim.keymap.set('n', '<leader>r', ':source $MYVIMRC<CR>', { desc = 'Reload config' })
 
 -- Telescope keybindings (only define these after Telescope is loaded)
@@ -25,11 +25,14 @@ if telescope_ok then
   -- Leader + i: grepping
   vim.keymap.set('n', '<leader>i', builtin.live_grep, { desc = 'Live grep' })
 end
-
 -- LSP keybindings (set up when LSP attaches to a buffer)
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
     local opts = { buffer = args.buf }
+
+    vim.keymap.set('n', '<leader>h', function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+    end, { desc = 'Toggle inlay hints' })
 
     -- Go to definition
     vim.keymap.set('n', '<M-j>', vim.lsp.buf.definition, vim.tbl_extend('force', opts, { desc = 'Go to definition' }))

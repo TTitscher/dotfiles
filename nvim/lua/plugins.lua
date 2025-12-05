@@ -27,14 +27,10 @@ require("lazy").setup({
     "neovim/nvim-lspconfig",
     config = function()
       -- C++ language support via LSP (using native vim.lsp.config)
-      local navic = require('nvim-navic')
       vim.lsp.config('clangd', {
         cmd = { 'clangd' },
         filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
         root_markers = { '.clangd', '.clang-tidy', '.clang-format', 'compile_commands.json', 'compile_flags.txt', 'configure.ac', '.git' },
-        on_attach = function(client, bufnr)
-          navic.attach(client, bufnr)
-        end
       })
 
       -- Enable the LSP for C++ files
@@ -59,6 +55,25 @@ require("lazy").setup({
         end,
       })
 
+      -- python
+      vim.lsp.config('pyright', {
+      cmd = { 'pyright-langserver', '--stdio' },
+      filetypes = { 'python' },
+      root_markers = { 'pyproject.toml', 'setup.py', 'requirements.txt', '.git' },
+      settings = {
+        python = {
+          analysis = {
+            autoSearchPaths = true,
+            useLibraryCodeForTypes = true,
+            diagnosticMode = 'workspace',
+          },
+        },
+      },
+    })
+
+    -- Enable it
+    vim.lsp.enable('pyright')
+
     end
   },
 
@@ -82,7 +97,6 @@ require("lazy").setup({
         },
         mapping = cmp.mapping.preset.insert({
           ['<C-Space>'] = cmp.mapping.complete(),      -- Trigger completion with Ctrl+Space
-          ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Confirm with Enter
           ['<Tab>'] = cmp.mapping.select_next_item(),  -- Navigate with Tab
           ['<S-Tab>'] = cmp.mapping.select_prev_item(), -- Navigate with Shift+Tab
           ['<C-e>'] = cmp.mapping.abort(),             -- Close completion menu
@@ -103,11 +117,9 @@ require("lazy").setup({
     build = ":TSUpdate",
     config = function()
       require('nvim-treesitter.configs').setup({
-        ensure_installed = { "cpp", "c", "lua", "html", "svelte", "javascript", "typescript", "css", "markdown", "markdown_inline", "sql" },
         auto_install = true,
-        highlight = { enable = false, 
-        additional_vim_regex_highlighting = false,
-        disable = { "html" }
+        highlight = { enable = true,
+        disable = { "html", "csv", "yaml" }
       },
     })
   end
@@ -244,18 +256,136 @@ require("lazy").setup({
     })
   end
 },
-{
-  'SmiteshP/nvim-navic',
-  dependencies = { 'neovim/nvim-lspconfig' },
-  config = function()
-    require('nvim-navic').setup({
-      lsp = {
-        auto_attach = true,
-      },
-      highlight = true,
-    })
-  end
-}
+  -- Git signs (colored lines for git changes)
+  {
+    'lewis6991/gitsigns.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = true,
+  },
+
+  -- Treesitter context
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = true,
+  },
+    -- Git conflict highlighting
+  {
+    'akinsho/git-conflict.nvim',
+    version = "*",
+    event = { 'BufReadPre', 'BufNewFile' },
+    config = true,
+  },
+  {
+    "petertriho/nvim-scrollbar",
+    config = function()
+      require("scrollbar").setup()
+      require("scrollbar.handlers.diagnostic").setup()
+	  end,
+  },
+  {
+    "folke/todo-comments.nvim",
+    event = "VimEnter",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = { signs = false },
+  },
+  {
+    "frankroeder/parrot.nvim",
+    dependencies = { "ibhagwan/fzf-lua", "nvim-lua/plenary.nvim" },
+    opts = {},
+    config = function()
+      require("parrot").setup({
+        providers = {
+          ollama = {
+            name = "ollama",
+            endpoint = "http://ai-workstation:11434/api/chat", -- Match your host and port from Gen.nvim
+            api_key = "", -- Not needed for local Ollama
+            params = {
+              chat = { temperature = 1.0, top_p = 1, num_ctx = 8192, min_p = 0.05 }, -- Defaults reasonable for Llama3
+              command = { temperature = 1.0, top_p = 1, num_ctx = 8192, min_p = 0.05 }, -- Defaults; adjust as per preference
+            },
+            topic_prompt = [[
+  Summarize the chat above and only provide a short headline of 2 to 3
+  words without any opening phrase like "Sure, here is the summary",
+  "Sure! Here's a shortheadline summarizing the chat" or anything similar.
+  ]],
+            topic = {
+              model = "codellama:70b", -- Use your default from Gen.nvim
+              params = { max_tokens = 32 },
+            },
+            headers = {
+              ["Content-Type"] = "application/json",
+            },
+            models = {
+              "codellama:70b", -- Your default
+            },
+            resolve_api_key = function()
+              return true
+            end,
+            process_stdout = function(response)
+              if response:match("message") and response:match("content") then
+                local ok, data = pcall(vim.json.decode, response)
+                if ok and data.message and data.message.content then
+                  return data.message.content
+                end
+              end
+            end,
+            get_available_models = function(self)
+              local url = self.endpoint:gsub("chat", "")
+              local logger = require("parrot.logger")
+              local job = Job:new({
+                command = "curl",
+                args = { "-H", "Content-Type: application/json", url .. "tags" },
+              }):sync()
+              local parsed_response = require("parrot.utils").parse_raw_response(job)
+              self:process_onexit(parsed_response)
+              if parsed_response == "" then
+                logger.debug("Ollama server not running on " .. endpoint_api)
+                return {}
+              end
+
+              local success, parsed_data = pcall(vim.json.decode, parsed_response)
+              if not success then
+                logger.error("Ollama - Error parsing JSON: " .. vim.inspect(parsed_data))
+                return {}
+              end
+
+              if not parsed_data.models then
+                logger.error("Ollama - No models found. Please use 'ollama pull' to download one.")
+                return {}
+              end
+
+              local names = {}
+              for _, model in ipairs(parsed_data.models) do
+                table.insert(names, model.name)
+              end
+
+              return names
+            end,
+          },
+        },
+      })
+    end,
+  },
 })
 
-vim.o.winbar = "%{%v:lua.require'nvim-navic'.get_location()%}"
+-- Show diagnostics in a floating window when you hover over an error
+vim.api.nvim_create_autocmd("CursorHold", {
+  callback = function()
+    vim.diagnostic.open_float(nil, { focusable = false })
+  end
+})
+
+-- Optional: reduce the delay before showing (default is 4000ms)
+vim.opt.updatetime = 250
+
+-- Trim trailing whitespace on save
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function()
+    local save_cursor = vim.fn.getpos(".")
+    vim.cmd([[%s/\s\+$//e]])
+    vim.fn.setpos(".", save_cursor)
+  end,
+})
