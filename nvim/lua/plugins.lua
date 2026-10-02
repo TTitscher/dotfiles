@@ -24,11 +24,18 @@ require("lazy").setup({
   },
 
   {
+    "echasnovski/mini.bufremove", version = false,
+    config = function()
+      require('mini.bufremove').setup()
+    end
+  },
+
+  {
     "neovim/nvim-lspconfig",
     config = function()
       -- C++ language support via LSP (using native vim.lsp.config)
       vim.lsp.config('clangd', {
-        cmd = { 'clangd' },
+        cmd = { 'clangd', '--log=error' },
         filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
         root_markers = { '.clangd', '.clang-tidy', '.clang-format', 'compile_commands.json', 'compile_flags.txt', 'configure.ac', '.git' },
       })
@@ -49,32 +56,56 @@ require("lazy").setup({
       })
 
       vim.api.nvim_create_autocmd('FileType', {
-        pattern = 'svelte',
+        pattern = {'svelte', 'svelte.ts'},
         callback = function()
           vim.lsp.enable('svelte')
         end,
       })
 
-      -- python
+      -- python autocomplete
       vim.lsp.config('pyright', {
-      cmd = { 'pyright-langserver', '--stdio' },
-      filetypes = { 'python' },
-      root_markers = { 'pyproject.toml', 'setup.py', 'requirements.txt', '.git' },
-      settings = {
-        python = {
-          analysis = {
-            autoSearchPaths = true,
-            useLibraryCodeForTypes = true,
-            diagnosticMode = 'workspace',
+        cmd = { 'pyright-langserver', '--stdio' },
+        filetypes = { 'python' },
+        root_markers = { 'pyproject.toml', 'setup.py', 'requirements.txt', '.git' },
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = 'workspace',
+            },
           },
         },
-      },
-    })
+      })
+      vim.lsp.enable('pyright')
 
-    -- Enable it
-    vim.lsp.enable('pyright')
+      -- python formatting
+      vim.lsp.config('ruff', {
+        cmd = { 'ruff', 'server' },
+        filetypes = { 'python' },
+        root_markers = { 'pyproject.toml', 'setup.py', 'requirements.txt', '.git' },
+      })
 
-    end
+      vim.lsp.enable('ruff')
+
+      -- TypeScript/JavaScript LSP
+      vim.lsp.config('ts_ls', {
+        cmd = { 'typescript-language-server', '--stdio' },
+        filetypes = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
+        root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
+        settings = {
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = 'all',
+              includeInlayReturnTypeHints = true,
+            },
+          },
+        },
+      })
+
+      vim.lsp.enable('ts_ls')
+
+    end,
   },
 
   {
@@ -140,6 +171,26 @@ require("lazy").setup({
           prompt_position = 'top',
         },
         sorting_strategy = 'ascending',
+
+        -- passed to rg for live_grep / grep_string
+        vimgrep_arguments = {
+          'rg',
+          '--color=never',
+          '--no-heading',
+          '--with-filename',
+          '--line-number',
+          '--column',
+          '--smart-case',
+          '-tcpp',
+        },
+
+        -- -- telescope-side filter, applies to find_files too
+        -- file_ignore_patterns = {
+        --   'build/',
+        --   '%.o$',
+        --   '%.a$',
+        --   '%.json'
+        -- },
       },
     })
 
@@ -283,6 +334,23 @@ require("lazy").setup({
       require("scrollbar").setup()
       require("scrollbar.handlers.diagnostic").setup()
 	  end,
+  },
+  {
+    "f-person/git-blame.nvim",
+    -- load the plugin at startup
+    event = "VeryLazy",
+    -- Because of the keys part, you will be lazy loading this plugin.
+    -- The plugin will only load once one of the keys is used.
+    -- If you want to load the plugin at startup, add something like event = "VeryLazy",
+    -- or lazy = false. One of both options will work.
+    opts = {
+        -- your configuration comes here
+        -- for example
+        enabled = true,  -- if you want to enable the plugin
+        message_template = " <author> <<sha>> <date> <summary>", -- template for the blame message, check the Message template section for more options
+        date_format = "%m-%d-%Y", -- template for the date, check Date format section for more options
+        virtual_text_column = 1,  -- virtual text start column, check Start virtual text at column section for more options
+    },
   },
   {
     "folke/todo-comments.nvim",

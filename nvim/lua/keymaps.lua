@@ -1,13 +1,16 @@
 vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Exit insert mode' })
 vim.keymap.set('n', '<leader><leader>', 'V', { desc = 'Select line' })
-vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { desc = 'Find current file in explorer' })
+vim.keymap.set('n', '<C-n>', ':NvimTreeFindFileToggle<CR>', { desc = 'Find current file in explorer' })
 vim.keymap.set('n', '<Tab>', ':BufferLineCycleNext<CR>', { desc = 'Next buffer' })
 vim.keymap.set('n', '<S-Tab>', ':BufferLineCyclePrev<CR>', { desc = 'Previous buffer' })
-vim.keymap.set('n', '<F4>', ':bdelete<CR>', { desc = 'Close current buffer' })
 vim.keymap.set('n', '<M-d>', 'gcc', { remap = true, desc = 'Comments' })
 vim.keymap.set('v', '<M-d>', 'gc', { remap = true, desc = 'Comments' })
 vim.keymap.set('n', '<ESC>', ':nohlsearch<CR>', { desc = 'nohlsearch' })
 vim.keymap.set('n', '<leader>r', ':source $MYVIMRC<CR>', { desc = 'Reload config' })
+vim.keymap.set('n', '<F4>', function() require('mini.bufremove').delete(0, false)
+end, { desc = 'Close current buffer' })
+
+vim.cmd.iabbrev('iteM', '- [ ]')
 
 -- Telescope keybindings (only define these after Telescope is loaded)
 local telescope_ok, builtin = pcall(require, 'telescope.builtin')
